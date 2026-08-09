@@ -42,7 +42,7 @@ ScannerKu adalah aplikasi Android berbasis Kotlin yang dirancang untuk mempermud
 2. Buka proyek ini menggunakan Android Studio.
 
 3. Buka file MainActivity.kt dan ganti nilai GAS_URL dengan URL Web App Anda:
-  ```
+   ```
     private val GAS_URL = "URL_APPS_SCRIPT_ANDA_DI_SINI"
    ```
 
@@ -58,8 +58,11 @@ ScannerKu adalah aplikasi Android berbasis Kotlin yang dirancang untuk mempermud
 
 📸 Tangkapan Layar (Screenshots)
 
-(Opsional: Anda bisa mengunggah screenshot aplikasi Anda di sini dengan format ![Deskripsi](link_gambar))
-📄 Lisensi
+(Opsional: Anda bisa mengunggah screenshot aplikasi Anda di sini dengan format 
+   ```
+   ![Deskripsi](link_gambar))
+   ```
 
-# Proyek ini bersifat Open Source. Silakan digunakan, dimodifikasi, dan dikembangkan lebih lanjut untuk keperluan pendidikan maupun instansi Anda!
+# 📄 Lisensi
+ Proyek ini bersifat Open Source. Silakan digunakan, dimodifikasi, dan dikembangkan lebih lanjut untuk keperluan pendidikan maupun instansi Anda!
 
