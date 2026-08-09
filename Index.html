@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <base target="_top">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Sistem Absensi Digital</title>
+  
+  <!-- Font Modern (Google Fonts) -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Library jsQR sebagai fallback -->
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+
+  <style>
+    /* RESET & DASAR */
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0;
+    }
+
+    body { 
+      font-family: 'Poppins', sans-serif; 
+      /* Latar belakang gradien biru yang elegan */
+      background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%); 
+      color: #1f2937;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    /* KOTAK UTAMA (CARD) */
+    .container { 
+      width: 100%; 
+      max-width: 480px; 
+      background: #ffffff; 
+      border-radius: 24px; 
+      padding: 30px 25px; 
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08); 
+    }
+
+    h1 { 
+      text-align: center; 
+      color: #1e3a8a; 
+      font-size: 24px; 
+      font-weight: 700;
+      margin-bottom: 25px; 
+    }
+
+    /* AREA KAMERA / UPLOAD */
+    .camera-container { 
+      width: 100%; 
+      min-height: 220px;
+      background: #f8fafc; 
+      border: 2px dashed #cbd5e1;
+      border-radius: 20px; 
+      position: relative; 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      justify-content: center; 
+      padding: 25px 20px; 
+      transition: all 0.3s ease;
+    }
+
+    .camera-container:hover {
+      border-color: #3b82f6;
+      background: #eff6ff;
+    }
+
+    .camera-icon { 
+      font-size: 55px; 
+      margin-bottom: 10px; 
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+    }
+
+    .camera-text { 
+      text-align: center; 
+      color: #64748b; 
+      font-size: 14px;
+      font-weight: 500; 
+      margin-bottom: 20px; 
+    }
+
+    #cameraInput { display: none; }
+
+    .camera-button { 
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: #2563eb; 
+      color: white; 
+      padding: 14px 28px; 
+      border-radius: 12px; 
+      font-size: 16px; 
+      font-weight: 600; 
+      cursor: pointer; 
+      border: none; 
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+      transition: all 0.2s ease;
+    }
+
+    .camera-button:hover {
+      background: #1d4ed8;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(37, 99, 235, 0.4);
+    }
+
+    .camera-button:active { 
+      transform: translateY(1px); 
+    }
+
+    #preview { 
+      width: 100%; 
+      max-height: 250px; 
+      object-fit: contain;
+      border-radius: 12px; 
+      margin-top: 15px; 
+      display: none; 
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    /* PANEL STATUS */
+    .status-panel { 
+      margin-top: 20px; 
+      padding: 16px; 
+      border-radius: 12px; 
+      text-align: center; 
+      font-weight: 600; 
+      font-size: 15px;
+      background: #f1f5f9; 
+      color: #475569;
+      transition: all 0.3s;
+    }
+
+    .success { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+    .error { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+    .loading { background: #dbeafe; color: #1d4ed8; border: 1px solid #bfdbfe; animation: pulse 2s infinite; }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    /* HASIL SCAN */
+    .result { 
+      margin-top: 20px; 
+      padding: 20px; 
+      border-radius: 16px; 
+      background: #f8fafc; 
+      border: 1px solid #e2e8f0;
+      display: none; 
+      text-align: center;
+      animation: slideUp 0.4s ease;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-title { 
+      font-size: 14px; 
+      font-weight: 700; 
+      color: #10b981;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .nis { 
+      font-size: 28px; 
+      font-weight: 700; 
+      color: #0f172a; 
+      letter-spacing: 2px;
+    }
+
+    .small { 
+      color: #64748b; 
+      margin-top: 5px; 
+      font-size: 13px; 
+    }
+
+    /* TOMBOL ULANG */
+    .retry-button { 
+      display: none; 
+      width: 100%;
+      margin: 20px top; 
+      background: #475569; 
+      color: white; 
+      padding: 14px 20px; 
+      border: none; 
+      border-radius: 12px; 
+      font-size: 16px;
+      font-weight: 600; 
+      cursor: pointer; 
+      box-shadow: 0 4px 10px rgba(71, 85, 105, 0.2);
+      transition: background 0.2s;
+      margin-top: 20px;
+    }
+
+    .retry-button:hover { background: #334155; }
+
+    /* INFO & PANDUAN */
+    .info { 
+      margin-top: 25px; 
+      background: #f0f9ff; 
+      border-left: 4px solid #3b82f6;
+      border-radius: 8px; 
+      padding: 16px; 
+      font-size: 13px; 
+      color: #1e40af; 
+      line-height: 1.6; 
+    }
+
+    .info b { display: block; margin-bottom: 8px; font-size: 14px;}
+    .info ol { padding-left: 20px; }
+    .info li { margin-bottom: 4px; }
+    
+    /* Footer Credit (Opsional) */
+    .footer {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 12px;
+      color: #64748b;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>SISTEM ABSENSI</h1>
+
+  <!-- AREA KAMERA -->
+  <div class="camera-container">
+    <div class="camera-icon">📷</div>
+    <div class="camera-text">Arahkan kamera ke QR Code Siswa</div>
+    
+    <label for="cameraInput" class="camera-button">
+      <span>Buka Kamera</span>
+    </label>
+    <input type="file" id="cameraInput" accept="image/*" capture="environment">
+    
+    <img id="preview" alt="Preview QR">
+  </div>
+
+  <!-- PANEL STATUS -->
+  <div id="status-panel" class="status-panel">
+    Siap untuk memindai kehadiran
+  </div>
+
+  <!-- HASIL SCAN -->
+  <div id="result" class="result">
+    <div class="result-title">QR Code Terbaca</div>
+    <div id="nis-result" class="nis">-</div>
+    <div class="small">Memproses data ke server...</div>
+  </div>
+
+  <!-- TOMBOL ULANG -->
+  <button id="retry-button" class="retry-button" onclick="resetScanner()">🔄 Scan Siswa Berikutnya</button>
+
+  <!-- PANDUAN -->
+  <div class="info">
+    <b>Cara Penggunaan:</b>
+    <ol>
+      <li>Tekan tombol <b>Buka Kamera</b>.</li>
+      <li>Jepret foto QR Code milik siswa.</li>
+      <li>Pastikan foto tidak buram (fokus).</li>
+      <li>Sistem akan otomatis mencatat kehadiran.</li>
+    </ol>
+  </div>
+</div>
+
+<div class="footer">
+  <p> Absensi Digital &copy; 2026 </p>
+  <p> By Ramzi Selpora Widiyanto </p>
+</div>
+
+<!-- ==============================================
+     SCRIPT LOGIKA (JANGAN ADA YANG DIUBAH
+=============================================== -->
+<script>
+  const cameraInput = document.getElementById("cameraInput");
+  const preview = document.getElementById("preview");
+  const statusPanel = document.getElementById("status-panel");
+  const result = document.getElementById("result");
+  const nisResult = document.getElementById("nis-result");
+  const retryButton = document.getElementById("retry-button");
+
+  cameraInput.addEventListener("change", async function(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    statusPanel.className = "status-panel loading";
+    statusPanel.innerHTML = "⏳ Membaca QR Code...";
+    retryButton.style.display = "none";
+    result.style.display = "none";
+
+    const imageURL = URL.createObjectURL(file);
+    preview.src = imageURL;
+    preview.style.display = "block";
+
+    try {
+      await bacaQRCode(file);
+    } catch (error) {
+      console.error(error);
+      statusPanel.className = "status-panel error";
+      statusPanel.innerHTML = "❌ QR Code tidak terbaca / tidak fokus.";
+      retryButton.style.display = "block";
+    }
+  });
+
+  async function bacaQRCode(file) {
+    const imageURL = URL.createObjectURL(file);
+    const image = new Image();
+    image.src = imageURL;
+
+    await new Promise((resolve, reject) => {
+      image.onload = resolve;
+      image.onerror = reject;
+    });
+
+    if ("BarcodeDetector" in window) {
+      try {
+        const detector = new BarcodeDetector({ formats: ["qr_code"] });
+        const barcodes = await detector.detect(image);
+        if (barcodes && barcodes.length > 0) {
+          prosesHasilQR(barcodes[0].rawValue);
+          URL.revokeObjectURL(imageURL);
+          return; 
+        }
+      } catch(e) {
+        console.log("BarcodeDetector gagal, beralih ke jsQR...");
+      }
+    }
+
+    const canvas = document.createElement("canvas");
+    canvas.width = image.width;
+    canvas.height = image.height;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+    
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const code = jsQR(imageData.data, imageData.width, imageData.height, {
+      inversionAttempts: "dontInvert",
+    });
+
+    URL.revokeObjectURL(imageURL);
+
+    if (code && code.data) {
+      prosesHasilQR(code.data);
+    } else {
+      throw new Error("QR Code tidak ditemukan.");
+    }
+  }
+
+  function prosesHasilQR(data) {
+    if (!data || data.trim() === "") {
+      statusPanel.className = "status-panel error";
+      statusPanel.innerHTML = "❌ Data QR kosong.";
+      return;
+    }
+
+    const nis = data.trim();
+    nisResult.innerText = nis;
+    result.style.display = "block";
+
+    statusPanel.className = "status-panel loading";
+    statusPanel.innerHTML = "⏳ Menyimpan absensi...";
+
+    google.script.run
+      .withSuccessHandler(function(response) {
+        if (response.status === "success") {
+          statusPanel.className = "status-panel success";
+          statusPanel.innerHTML = "✅ " + response.message;
+        } else {
+          statusPanel.className = "status-panel error";
+          statusPanel.innerHTML = "❌ " + response.message;
+        }
+        retryButton.style.display = "block";
+      })
+      .withFailureHandler(function(error) {
+        statusPanel.className = "status-panel error";
+        statusPanel.innerHTML = "❌ Gagal menghubungi server.";
+        retryButton.style.display = "block";
+      })
+      .rekamAbsensi(nis);
+  }
+
+  function resetScanner() {
+    cameraInput.value = "";
+    preview.src = "";
+    preview.style.display = "none";
+    result.style.display = "none";
+    retryButton.style.display = "none";
+    statusPanel.className = "status-panel";
+    statusPanel.innerHTML = 'Siap untuk memindai kehadiran';
+  }
+</script>
+</body>
+</html>
