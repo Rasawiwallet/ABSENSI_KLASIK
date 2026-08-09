@@ -36,7 +36,7 @@ ScannerKu adalah aplikasi Android berbasis Kotlin yang dirancang untuk mempermud
 ### 2. Pengaturan Android Studio
 1. *Clone* repositori ini:
    ```
-   git clone [https://github.com/username-anda/nama-repo-anda.git](https://github.com/username-anda/nama-repo-anda.git)
+   git clone [https://github.com/Rasawiwallet/ABSENSI_KLASIK.git](https://github.com/Rasawiwallet/ABSENSI_KLASIK.git)
    
    ```
 2. Buka proyek ini menggunakan Android Studio.
