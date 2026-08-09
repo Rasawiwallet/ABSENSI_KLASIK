@@ -35,5 +35,31 @@ ScannerKu adalah aplikasi Android berbasis Kotlin yang dirancang untuk mempermud
 
 ### 2. Pengaturan Android Studio
 1. *Clone* repositori ini:
-   ```bash
+   ```
    git clone [https://github.com/username-anda/nama-repo-anda.git](https://github.com/username-anda/nama-repo-anda.git)
+   
+   ```
+2. Buka proyek ini menggunakan Android Studio.
+
+3. Buka file MainActivity.kt dan ganti nilai GAS_URL dengan URL Web App Anda:
+  ```
+    private val GAS_URL = "URL_APPS_SCRIPT_ANDA_DI_SINI"
+   ```
+
+4. Buka file DashboardActivity.kt dan ganti nilai GAS_URL dengan URL Anda (pastikan menambahkan ?action=getData di bagian akhir):
+   
+   ```
+    private val GAS_URL = "URL_APPS_SCRIPT_ANDA_DI_SINI?action=getData"
+   ```
+   
+ 5. Buka MainActivity.kt lagi dan sesuaikan URL spreadsheet asli pada tombol openSheetBtn.
+
+ 6. Klik Build > Generate APKs untuk membuat file installer .apk.
+
+📸 Tangkapan Layar (Screenshots)
+
+(Opsional: Anda bisa mengunggah screenshot aplikasi Anda di sini dengan format ![Deskripsi](link_gambar))
+📄 Lisensi
+
+# Proyek ini bersifat Open Source. Silakan digunakan, dimodifikasi, dan dikembangkan lebih lanjut untuk keperluan pendidikan maupun instansi Anda!
+
