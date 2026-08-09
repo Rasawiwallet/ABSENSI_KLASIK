@@ -1,6 +1,28 @@
 # ABSENSI_KLASIK
 Google Sheets, Google Appscript, Android Studio
 
+# Arsitektur
+```
+[ QR Code Siswa ] 
+       │
+       ▼
+📱 APLIKASI ANDROID (Client) ──────────────┐
+   - Kamera (ZXing Scanner)                │ (Koneksi Internet / HTTPS)
+   - Tampilan Dasbor                       │ 1. POST: Kirim NISN
+                                           │ 2. GET: Minta Rekap Data
+                                           ▼
+☁️ GOOGLE APPS SCRIPT (Serverless) ◄───────┘
+   - Logika Anti-Ganda (doPost)
+   - Konverter JSON (doGet)
+   - Otomatisasi Pembuatan Kolom & Bulan
+       │
+       ▼
+📊 GOOGLE SHEETS (Database)
+   - MASTERDATA (Data Induk)
+   - Agustus 2026 (Data Transaksi Dinamis)
+   - PERHITUNGAN (Agregasi Data)
+```
+
 # 📱 ScannerKu - Sistem Absensi Siswa Berbasis QR Code
 
 ScannerKu adalah aplikasi Android berbasis Kotlin yang dirancang untuk mempermudah proses absensi siswa menggunakan pindai (scan) QR Code. Aplikasi ini terintegrasi secara langsung dengan **Google Sheets** secara *real-time* menggunakan Google Apps Script (tanpa perlu *database* eksternal seperti MySQL atau Firebase).
