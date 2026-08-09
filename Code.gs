@@ -32,7 +32,7 @@ function doPost(e) {
   }
 
   // Gunakan ID Sheet Anda yang benar
-  var ss = SpreadsheetApp.openById("1xve41RwHn5kz9tZlmZQX8uJCwcYi5z7t86YPyQ7nTyc"); 
+  var ss = SpreadsheetApp.openById("ADD_ADDRESS_ON_YOUR_SHEETS"); 
   var timeZone = "Asia/Jakarta"; 
   var dateObj = new Date();
 
